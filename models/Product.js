@@ -29,15 +29,8 @@ const Products = db.define('products', {
             notEmpty: true
         }
     },
-    user_id: {
+    userId: {
         type: DataTypes.INTEGER,
-        allowNull: false, //! tidak boleh kosong
-        validate: {
-            notEmpty: true
-        }
-    },
-    role: {
-        type: DataTypes.STRING,
         allowNull: false, //! tidak boleh kosong
         validate: {
             notEmpty: true
@@ -50,7 +43,14 @@ const Products = db.define('products', {
 //*     :::   Relation One to Many   :::
 Users.hasMany(Products)
 Products.belongsTo(Users, {
-    foreignKey: 'user_id'
+    foreignKey: 'userId'
 })
+
+//* Syncron model for auto generate this table
+// db.sync().then(() => {
+//     console.log('Product table created successfully!');
+// }).catch((error) => {
+//     console.error('Unable to create table : ', error);
+// });
 
 export default Products

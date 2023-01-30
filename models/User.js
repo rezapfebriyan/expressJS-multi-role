@@ -47,4 +47,11 @@ const Users = db.define('users', {
     freezeTableName: true
 })
 
+//* Syncron model for auto generate this table
+// db.sync().then(() => {
+//     console.log('User table created successfully!');
+// }).catch((error) => {
+//     console.error('Unable to create table : ', error);
+// });
+
 export default Users
