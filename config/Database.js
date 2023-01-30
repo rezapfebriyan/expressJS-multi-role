@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize"
 
-const db = new Sequelize('multi_role', 'root', '', {
+const db = new Sequelize('express-role', 'root', '', {
     host: "localhost",
     dialect: "mysql"
 })
