@@ -16,7 +16,7 @@ app.use(session({
     }
 }))
 
-app.use(express.json)
+app.use(express.json())
 app.use(ProductRoute)
 app.use(UserRoute)
 
