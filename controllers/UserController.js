@@ -64,7 +64,7 @@ export const updateUser = async (req, res) => {
         where: {uuid: req.params.id}
     })
 
-    if (!user) return res.status(400).json({
+    if (!user) return res.status(404).json({
         "Status code" : 404,
         message: "User not found" 
     })
@@ -108,7 +108,7 @@ export const deleteUser = async (req, res) => {
         where: {uuid: req.params.id}
     })
 
-    if (!user) return res.status(400).json({
+    if (!user) return res.status(404).json({
         "Status code" : 404,
         message: "User not found" 
     })
