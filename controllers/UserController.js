@@ -7,10 +7,8 @@ export const getUsers = async (req, res) => {
             attributes:['uuid', 'name', 'email', 'role']
         })
         res.status(200)
-            .json({
-                "Status code" : 200,
-                "Data" : user
-            })
+            .json({ "Status code" : 200,
+                "Data" : user })
     } catch (error) {
         res.status(500)
             .json({  message : error.message })
@@ -24,10 +22,8 @@ export const showUser = async (req, res) => {
             where: {uuid: req.params.id}
         })
         res.status(200)
-            .json({
-                "Status code" : 200,
-                "Data" : user
-            })
+            .json({ "Status code" : 200,
+                "Data" : user })
     } catch (error) {
         res.status(500)
             .json({ message : error.message })
@@ -49,10 +45,8 @@ export const createUser = async (req, res) => {
             role : role
         })
         res.status(201)
-            .json({
-                "Status code" : 201,
-                message: "Registration successful"
-            })
+            .json({ "Status code" : 201,
+                message: "Registration successful" })
     } catch (error) {
         res.status(400)
             .json({ message: error.message })
@@ -93,10 +87,8 @@ export const updateUser = async (req, res) => {
             }
         })
         res.status(200)
-            .json({
-                "Status code" : 200,
-                message: "User has been updated"
-            })
+            .json({ "Status code" : 200,
+                message: "User has been updated" })
     } catch (error) {
         res.status(400)
             .json({ message: error.message })
@@ -120,10 +112,8 @@ export const deleteUser = async (req, res) => {
             }
         })
         res.status(200)
-            .json({
-                "Status code" : 200,
-                message: "User has been deleted"
-            })
+            .json({ "Status code" : 200,
+                message: "User has been deleted" })
     } catch (error) {
         res.status(400)
             .json({ message: error.message })
