@@ -6,14 +6,17 @@ import {
     updateUser,
     deleteUser
 } from "../controllers/UserController.js"
-import { verifyUser } from "../middlewares/AuthUser.js"
+import { 
+    verifyUser,
+    isAdmin
+ } from "../middlewares/AuthUser.js"
 
 const router = express.Router()
 
-router.get('/users', verifyUser, getUsers)
-router.get('/user/:id', verifyUser, showUser)
-router.post('/user', verifyUser, createUser)
-router.patch('/user/:id', verifyUser, updateUser)
-router.delete('/user/:id', verifyUser, deleteUser)
+router.get('/users', verifyUser, isAdmin, getUsers)
+router.get('/user/:id', verifyUser, isAdmin, showUser)
+router.post('/user', verifyUser, isAdmin, createUser)
+router.patch('/user/:id', verifyUser, isAdmin, updateUser)
+router.delete('/user/:id', verifyUser, isAdmin, deleteUser)
 
 export default router
