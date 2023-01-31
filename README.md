@@ -1,2 +1,2 @@
 # expressJS-multi-role
-CRUD and multi Role app using Express JS and MySQL
+Restful CRUD and multi Role app using Express JS and MySQL
