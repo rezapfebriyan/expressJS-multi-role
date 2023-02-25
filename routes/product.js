@@ -11,9 +11,9 @@ import { verifyUser } from "../middlewares/AuthUser.js"
 const router = express.Router()
 
 router.get('/products', verifyUser, getProducts)
-router.get('/products/:id', verifyUser, showProduct)
-router.post('/products', verifyUser, createProduct)
-router.patch('/products/:id', verifyUser, updateProduct)
-router.delete('/products/:id', verifyUser, deleteProduct)
+router.get('/product/:id', verifyUser, showProduct)
+router.post('/product', verifyUser, createProduct)
+router.patch('/product/:id', verifyUser, updateProduct)
+router.delete('/product/:id', verifyUser, deleteProduct)
 
 export default router
