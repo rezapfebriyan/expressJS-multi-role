@@ -13,18 +13,18 @@ export const getProducts = async (req, res) => {
                 include:[{ 
                     model: User,
                     attributes:['uuid', 'name']
-                 }] //? ada relasi Product ke User
+                 }] // ada relasi Product ke User
             })
         } else {
             response = await Product.findAll({
                 attributes:['uuid', 'name', 'price'],
                 where: {
-                    userId: req.userId //? req from data middleware
+                    userId: req.userId // req from data middleware
                 },
                 include:[{ 
                     model: User,
                     attributes:['uuid', 'name']
-                }] //? ada relasi Product ke User
+                }] // ada relasi Product ke User
             })
         }
 
@@ -59,7 +59,7 @@ export const showProduct = async (req, res) => {
                 include:[{ 
                     model: User,
                     attributes:['uuid', 'name']
-                 }] //? ada relasi Product ke User
+                 }] // ada relasi Product ke User
             })
         } else {
             response = await Product.findOne({
@@ -93,7 +93,7 @@ export const createProduct = async (req, res) => {
         await Product.create({
             name,
             price,
-            userId: req.userId
+            userId: req.userId // req from data middleware
         })
         res.status(201)
         .json({ "Status code" : 201,
@@ -123,7 +123,7 @@ export const updateProduct = async (req, res) => {
                 }   
             })
         } else {
-            if (req.userId !== product.userId) return res.status(404).json({
+            if (req.userId !== product.userId) return res.status(403).json({
                 "Status code" : 403,
                 message: "Forbidden Update" 
             })
