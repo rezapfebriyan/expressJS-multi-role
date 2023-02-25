@@ -147,6 +147,46 @@ export const updateProduct = async (req, res) => {
     }
 }
 
-export const deleteProduct = (req, res) => {
-    //
+export const deleteProduct = async (req, res) => {
+    try {
+        const product = await Product.findOne({
+            where: {uuid: req.params.id}
+        })
+        if (!product) return res.status(404).json({
+            "Status code" : 404,
+            message: "Product not found" 
+        })
+
+        const {name, price} = req.body
+
+        //* if auth user admin
+        if (req.role === "Admin") {
+            await Product.destroy(
+                {where: {
+                    id: product.id
+                }   
+            })
+        } else {
+            if (req.userId !== product.userId) return res.status(403).json({
+                "Status code" : 403,
+                message: "Forbidden delete" 
+            })
+            await Product.destroy(
+                {where: {
+                    [Op.and]: [
+                        {id: product.id}, {userId: req.userId}
+                    ]
+                },
+            })
+        }
+
+        res.status(200)
+            .json({ "Status code" : 200,
+            message: "Product has been deleted" })
+
+    } catch (error) {
+        res.status(500)
+            .json({ "Status code" : 500,
+            message: error.message })
+    }
 }
