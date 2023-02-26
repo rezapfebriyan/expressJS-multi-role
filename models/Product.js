@@ -29,6 +29,11 @@ const Products = db.define('products', {
             notEmpty: true
         }
     },
+    image: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    url: DataTypes.STRING,
     userId: {
         type: DataTypes.INTEGER,
         allowNull: false, //! tidak boleh kosong
