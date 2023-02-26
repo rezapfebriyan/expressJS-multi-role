@@ -1,5 +1,6 @@
 import express from "express"
 import session from "express-session"
+import fileUpload from "express-fileupload"
 import dotenv from "dotenv"
 import SequelizeStore from "connect-session-sequelize"
 import ProductRoute from "./routes/product.js"
@@ -26,6 +27,7 @@ app.use(session({
 }))
 
 app.use(express.json())
+app.use(fileUpload())
 app.use(ProductRoute)
 app.use(UserRoute)
 app.use(AuthRoute)
