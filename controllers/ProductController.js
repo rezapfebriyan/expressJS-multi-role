@@ -141,24 +141,60 @@ export const createProduct = async (req, res) => {
 }
 
 export const updateProduct = async (req, res) => {
+    const product = await Product.findOne({
+    where: {uuid: req.params.id}
+    })
+    if (!product) return res.status(404).json({
+        "Status code" : 404,
+        message: "Product not found" 
+    })
+
+    let fileName = ""
+
+    if (!req.files) {
+        fileName = product.image
+    } else {
+        const file = req.files.file
+        const fileSize = file.data.length
+        const ext = path.extname(file.name) // get extention file
+        fileName = file.md5 + ext // convert file name to MD5
+        const allowedType = [".png", ".jpg", ".jpeg"]
+
+        if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({
+            "Status code" : 422,
+            message: "Invalid image !" 
+        })
+
+        // validation for file size
+        if (fileSize > 3000000) return res.status(422).json({
+            "Status code" : 422,
+            message: "Your image must be less than 5 MB !" 
+        })
+
+        const filePath = `./public/images/${product.image}` // get path of file image
+        fs.unlinkSync(filePath) // delete old image
+
+        // store new image to storage
+        file.mv(`./public/images/${fileName}`, (error) => {
+            if (error) return res.status(500).json({
+                "Status code" : 422,
+                message: error.message 
+            })  
+        })
+    }
+
+    const {name, price} = req.body
+    const url = `${req.protocol}://${req.get("host")}/images/${fileName}` // http://localhost
+    
     try {
-        const product = await Product.findOne({
-            where: {uuid: req.params.id}
-        })
-        if (!product) return res.status(404).json({
-            "Status code" : 404,
-            message: "Product not found" 
-        })
-
-        const {name, price} = req.body
-
         //* if auth user admin
         if (req.role === "Admin") {
-            await Product.update({name, price},
-                {where: {
-                    id: product.id
-                }   
-            })
+            await Product.update(
+                { name,  price, url },
+                {
+                    where: { id: product.id }
+                }
+            )
         } else {
             if (req.userId !== product.userId) return res.status(403).json({
                 "Status code" : 403,
