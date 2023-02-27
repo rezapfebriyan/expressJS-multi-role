@@ -28,6 +28,7 @@ app.use(session({
 
 app.use(express.json())
 app.use(fileUpload())
+app.use(express.static("public"))
 app.use(ProductRoute)
 app.use(UserRoute)
 app.use(AuthRoute)
