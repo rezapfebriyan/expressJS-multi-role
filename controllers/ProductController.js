@@ -1,6 +1,7 @@
 import Product from "../models/Product.js"
 import User from "../models/User.js"
 import path from "path"
+import fs from "fs"
 import {Op} from "sequelize"
 
 export const getProducts = async (req, res) => {
@@ -184,19 +185,19 @@ export const updateProduct = async (req, res) => {
 }
 
 export const deleteProduct = async (req, res) => {
+    const product = await Product.findOne({
+        where: {uuid: req.params.id}
+    })
+    if (!product) return res.status(404).json({
+        "Status code" : 404,
+        message: "Product not found" 
+    })
+
+    const filePath = `./public/images/${product.image}` // get path of file image
     try {
-        const product = await Product.findOne({
-            where: {uuid: req.params.id}
-        })
-        if (!product) return res.status(404).json({
-            "Status code" : 404,
-            message: "Product not found" 
-        })
-
-        const {name, price} = req.body
-
         //* if auth user admin
         if (req.role === "Admin") {
+            fs.unlinkSync(filePath)
             await Product.destroy(
                 {where: {
                     id: product.id
@@ -207,6 +208,7 @@ export const deleteProduct = async (req, res) => {
                 "Status code" : 403,
                 message: "Forbidden delete" 
             })
+            fs.unlinkSync(filePath)
             await Product.destroy(
                 {where: {
                     [Op.and]: [
