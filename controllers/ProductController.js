@@ -1,5 +1,6 @@
 import Product from "../models/Product.js"
 import User from "../models/User.js"
+import path from "path"
 import {Op} from "sequelize"
 
 export const getProducts = async (req, res) => {
@@ -9,7 +10,7 @@ export const getProducts = async (req, res) => {
         //* if auth user admin
         if (req.role === "Admin") {
             response = await Product.findAll({
-                attributes:['uuid', 'name', 'price'],
+                attributes:['uuid', 'name', 'price', 'image'],
                 include:[{ 
                     model: User,
                     attributes:['uuid', 'name']
@@ -17,7 +18,7 @@ export const getProducts = async (req, res) => {
             })
         } else {
             response = await Product.findAll({
-                attributes:['uuid', 'name', 'price'],
+                attributes:['uuid', 'name', 'price', 'image'],
                 where: {
                     userId: req.userId // req from data middleware
                 },
@@ -54,7 +55,7 @@ export const showProduct = async (req, res) => {
         //* if auth user admin
         if (req.role === "Admin") {
             response = await Product.findOne({
-                attributes:['uuid', 'name', 'price'],
+                attributes:['uuid', 'name', 'price', 'image'],
                 where: {id: product.id},
                 include:[{ 
                     model: User,
@@ -63,7 +64,7 @@ export const showProduct = async (req, res) => {
             })
         } else {
             response = await Product.findOne({
-                attributes:['uuid', 'name', 'price'],
+                attributes:['uuid', 'name', 'price', 'image'],
                 where: {
                     [Op.and]: [
                         {id: product.id}, {userId: req.userId}
@@ -88,18 +89,53 @@ export const showProduct = async (req, res) => {
 }
 
 export const createProduct = async (req, res) => {
+    if (!req.files) return res.status(400).json({
+        "Status code" : 400,
+        message: "You must upload file !" 
+    })
+
     const {name, price} = req.body
+    const file = req.files.file
+    const fileSize = file.data.length
+    const ext = path.extname(file.name) // get extention file
+    const fileName = file.md5 + ext // convert file name to MD5
+    const url = `${req.protocol}://${req.get("host")}/images/${fileName}` // http://localhost
+    const allowedType = [".png", ".jpg", ".jpeg"]
+    
+    if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({
+        "Status code" : 422,
+        message: "Invalid image !" 
+    })
+
+    // validation for file size
+    if (fileSize > 3000000) return res.status(422).json({
+        "Status code" : 422,
+        message: "Your image must be less than 5 MB !" 
+    })
+
+    // save image to storage
+    file.mv(`./public/images/${fileName}`, async (error) => {
+        if (error) return res.status(500).json({
+            "Status code" : 422,
+            message: error.message 
+        })  
+    })
+    
     try {
         await Product.create({
             name,
             price,
+            image: fileName,
+            url,
             userId: req.userId // req from data middleware
         })
         res.status(201)
         .json({ "Status code" : 201,
             message: "Product has been created" })
     } catch (error) {
-        
+        res.status(500)
+            .json({ "Status code" : 500,
+            message: error.message })
     }
 }
 
